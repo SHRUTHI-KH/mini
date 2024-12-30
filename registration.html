@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome - Easy Banking</title>
+    <style>
+        :root {
+            --primary: #1a73e8;
+            --secondary: #f8f9fa;
+            --text: #202124;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(to bottom right, #1a73e8, #f8f9fa);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 2rem;
+        }
+
+        .welcome-section {
+            width: 50%;
+            color: white;
+            padding: 2rem;
+        }
+
+        .welcome-section h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 0.2rem;
+            flex-wrap: wrap;
+        }
+
+        .welcome-section h1 span {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .welcome-section p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+
+        .register-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h1 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .voice-button {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-section">
+        <h1 id="welcomeText"></h1>
+        <p>At Easy Banking, we prioritize your financial security and convenience. Manage your accounts, perform secure transactions, and explore a wide range of services tailored to your needs. Register now and experience the future of banking.</p>
+    </div>
+
+    <div class="register-container">
+        <h1>Create Account</h1>
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="fullname">Full Name</label>
+                <input type="text" id="fullname" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required>
+            </div>
+            <div class="form-group">
+                <label for="confirm-password">Confirm Password</label>
+                <input type="password" id="confirm-password" required>
+            </div>
+            <button type="submit">Register</button>
+        </form>
+        <div class="login-link">
+            Already have an account? <a href="login.html">Login</a>
+        </div>
+    </div>
+
+    <button class="voice-button" onclick="toggleVoiceAssistant()">🎤</button>
+
+    <script>
+        const synth = window.speechSynthesis;
+        let isListening = false;
+
+        function speak(text) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 0.9;
+            synth.speak(utterance);
+        }
+
+        function toggleVoiceAssistant() {
+            isListening = !isListening;
+            if (isListening) {
+                speak("Voice assistant activated. Please fill in your details to register.");
+            } else {
+                speak("Voice assistant deactivated");
+            }
+        }
+
+        document.querySelectorAll('label').forEach(label => {
+            label.addEventListener('click', () => {
+                speak(label.textContent);
+            });
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            if (password !== confirmPassword) {
+                speak("Passwords do not match");
+                alert("Passwords do not match");
+                return;
+            }
+
+            const userData = {
+                fullname: document.getElementById('fullname').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                password: password
+            };
+
+            localStorage.setItem('userData', JSON.stringify(userData));
+            speak("Registration successful. Redirecting to login page");
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 2000);
+        });
+
+        function animateText() {
+            const text = "Welcome to Easy Banking";
+            const welcomeText = document.getElementById('welcomeText');
+
+            text.split('').forEach((letter, index) => {
+                const span = document.createElement('span');
+                span.textContent = letter;
+                span.style.animationDelay = `${index * 0.1}s`;
+                welcomeText.appendChild(span);
+            });
+        }
+
+        window.onload = () => {
+            animateText();
+            setTimeout(() => {
+                speak("Welcome to Easy Banking registration. Press the microphone button for voice assistance.");
+            }, 1000);
+        };
+    </script>
+</body>
+</html>

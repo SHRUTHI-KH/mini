@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Easy Banking</title>
+    <style>
+        :root {
+            --primary: #1a73e8;
+            --secondary: #f8f9fa;
+            --text: #202124;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(to bottom right, #1a73e8, #f8f9fa);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 2rem;
+        }
+
+        .login-section {
+            width: 45%;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .login-section h1 {
+            font-size: 2rem;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .info-section {
+            width: 45%;
+            color: white;
+            padding: 2rem;
+        }
+
+        .info-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-section p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .voice-button {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-section">
+        <h1>Login Page</h1>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        <div class="register-link">
+            Don't have an account? <a href="register.html">Register</a>
+        </div>
+    </div>
+
+    <div class="info-section">
+        <h2>Welcome to Easy Banking</h2>
+        <p>At Easy Banking, we ensure secure and convenient banking services. Log in to access your personalized dashboard and manage your accounts effortlessly.</p>
+        <p>Our platform offers seamless fund transfers, bill payments, and account management features to simplify your financial tasks.</p>
+        <p>For assistance, contact our 24/7 support team dedicated to addressing all your banking needs.</p>
+    </div>
+
+    <button class="voice-button" onclick="toggleVoiceAssistant()">🎤</button>
+
+    <script>
+        const synth = window.speechSynthesis;
+        let isListening = false;
+
+        function speak(text) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 0.9;
+            synth.speak(utterance);
+        }
+
+        function toggleVoiceAssistant() {
+            isListening = !isListening;
+            if (isListening) {
+                speak("Voice assistant activated. Please enter your login details.");
+            } else {
+                speak("Voice assistant deactivated");
+            }
+        }
+
+        document.querySelectorAll('label').forEach(label => {
+            label.addEventListener('click', () => {
+                speak(label.textContent);
+            });
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const storedData = JSON.parse(localStorage.getItem('userData'));
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            if (storedData && storedData.email === email && storedData.password === password) {
+                speak("Login successful. Redirecting to dashboard");
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 2000);
+            } else {
+                speak("Invalid email or password");
+                alert("Invalid email or password");
+            }
+        });
+
+        window.onload = () => {
+            setTimeout(() => {
+                speak("Welcome to Easy Banking login. Press the microphone button for voice assistance.");
+            }, 1000);
+        };
+    </script>
+</body>
+</html>
